@@ -22,6 +22,7 @@ namespace PipelineImplementations
 
             //await UsagePartN.Use2();
             UsagePart3.Use();
+            await PartX.Usage.Use();
 
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();

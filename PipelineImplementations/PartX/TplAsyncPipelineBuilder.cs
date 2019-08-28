@@ -30,15 +30,20 @@ namespace PipelineImplementations.PartX
         {
             switch (_lastStep)
             {
+                case null:
+                    var initialBlock = new TransformBlock<TCurrentInput, Task<TOutput>>(async (input) => await transformAsync(input));
+                    PushStep(initialBlock);
+                    break;
+
                 case ISourceBlock<Task<TCurrentInput>> asyncSourceBlock:
                     var newAsyncBlock = new TransformBlock<Task<TCurrentInput>, Task<TOutput>>(async (input) => await transformAsync(await input));
                     asyncSourceBlock.LinkTo(newAsyncBlock);
                     PushStep(newAsyncBlock);
                     break;
 
-                case null:
                 case ISourceBlock<TCurrentInput> sourceBlock:
                     var newBlock = new TransformBlock<TCurrentInput, Task<TOutput>>(async (input) => await transformAsync(input));
+                    sourceBlock.LinkTo(newBlock);
                     PushStep(newBlock);
                     break;
             }
